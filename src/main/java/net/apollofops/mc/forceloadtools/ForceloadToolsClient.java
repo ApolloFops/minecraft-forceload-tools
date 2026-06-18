@@ -74,11 +74,27 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (message.getContents() instanceof TranslatableContents translatable) {
+			TranslatableContents translatable = null;
+
+			// Check if the contents of the message are translatable - if so, use them
+			if (message.getContents() instanceof TranslatableContents contents) {
+				translatable = contents;
+			}
+			// Otherwise, traverse the siblings of the message and find a TranslatableContents among them
+			else {
+				for (Component sibling : message.getSiblings()) {
+					if (sibling.getContents() instanceof TranslatableContents contents) {
+						translatable = contents;
+						break;
+					}
+				}
+			}
+
+			if (translatable != null) {
 				String key = translatable.getKey();
 
 				// Update the chunk list if we get a query response
-				if (key.equals("commands.forceload.list.single") || key.equals("commands.forceload.list.multiple")) {
+				if (key.equals("commands.forceload.list.single") || key.equals("commands.forceload.list.multiple") || key.equals("commands.forceload.added.none")) {
 					// Grab the chunklist arg from the message
 					String chunkList = "";
 
