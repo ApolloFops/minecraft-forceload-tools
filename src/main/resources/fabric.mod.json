@@ -3,20 +3,23 @@
 	"id": "forceload-tools",
 	"version": "${version}",
 	"name": "Forceload Tools",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A client-side mod to visualize and manage forceloaded chunks.",
 	"authors": [
-		"Me!"
+		"ApolloFops"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/ApolloFops/minecraft-forceload-tools",
+		"sources": "https://github.com/ApolloFops/minecraft-forceload-tools"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/forceload-tools/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"net.apollofops.mc.forceloadtools.ForceloadTools"
+		],
+		"client": [
+			"net.apollofops.mc.forceloadtools.ForceloadToolsClient"
 		]
 	},
 	"mixins": [
