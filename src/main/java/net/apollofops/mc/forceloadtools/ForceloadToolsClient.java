@@ -54,7 +54,6 @@ public class ForceloadToolsClient implements ClientModInitializer {
 
 					// Try to parse out the chunks that are loaded
 					Pattern pattern = Pattern.compile("\\[(\\-?\\d+)\\,\\s(\\-?\\d+)\\]");
-					// Pattern pattern = Pattern.compile("\\[(\\d+)\\,\\s(\\d+)\\]");
 					Matcher matcher = pattern.matcher(chunkList);
 
 					forceloadedChunks.clear();
