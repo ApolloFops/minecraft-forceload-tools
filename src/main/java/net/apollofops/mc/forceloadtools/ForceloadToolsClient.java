@@ -9,6 +9,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -182,6 +183,12 @@ public class ForceloadToolsClient implements ClientModInitializer {
 
 		// Disable the overlay so we get into a known state
 		disable();
+
+		// Clean up some things when joining
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+			// Disable the overlay
+			disable();
+		});
 	}
 
 	/**
