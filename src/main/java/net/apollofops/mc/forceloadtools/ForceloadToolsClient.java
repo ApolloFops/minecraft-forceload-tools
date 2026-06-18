@@ -30,10 +30,10 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	 *
 	 * @param x
 	 *                The X coordinate of the chunk.
-	 * @param y
-	 *                The Y coordinate of the chunk.
+	 * @param z
+	 *                The Z coordinate of the chunk.
 	 */
-	public record ForceloadedChunk(int x, int y) {}
+	public record ForceloadedChunk(int x, int z) {}
 
 	/**
 	 * The list of chunks that are currently known to be forceloaded. This gets updated every time the
@@ -56,7 +56,7 @@ public class ForceloadToolsClient implements ClientModInitializer {
 		int chunkX = (int) Math.floor((double) blockPos.getX() / 16);
 		int chunkZ = (int) Math.floor((double) blockPos.getZ() / 16);
 
-		if (!forceloadedChunks.stream().anyMatch(obj -> (obj.x == chunkX && obj.y == chunkZ))) {
+		if (!forceloadedChunks.stream().anyMatch(obj -> (obj.x == chunkX && obj.z == chunkZ))) {
 			return OverlayRendererBlockData.NO_RENDER;
 		}
 
@@ -97,14 +97,14 @@ public class ForceloadToolsClient implements ClientModInitializer {
 					while (matcher.find()) {
 						if (matcher.groupCount() == 2) {
 							int x = Integer.parseInt(matcher.group(1));
-							int y = Integer.parseInt(matcher.group(2));
+							int z = Integer.parseInt(matcher.group(2));
 
-							forceloadedChunks.add(new ForceloadedChunk(x, y));
+							forceloadedChunks.add(new ForceloadedChunk(x, z));
 						}
 					}
 
 					for (ForceloadedChunk chunk : forceloadedChunks) {
-						log(String.format("Chunk [%d, %d]", chunk.x, chunk.y));
+						log(String.format("Chunk [%d, %d]", chunk.x, chunk.z));
 					}
 
 					// Clear the overlay chunks so they get reloaded
