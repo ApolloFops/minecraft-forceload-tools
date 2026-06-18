@@ -77,7 +77,7 @@ public class ForceloadToolsClient implements ClientModInitializer {
 			if (message.getContents() instanceof TranslatableContents translatable) {
 				String key = translatable.getKey();
 
-				// Handle the message if it's related to forceload
+				// Update the chunk list if we get a query response
 				if (key.equals("commands.forceload.list.single") || key.equals("commands.forceload.list.multiple")) {
 					// Grab the chunklist arg from the message
 					String chunkList = "";
@@ -119,6 +119,11 @@ public class ForceloadToolsClient implements ClientModInitializer {
 					} else {
 						return true;
 					}
+				}
+
+				// Send a query if we get a response that a chunk has been added or removed
+				else if (key.equals("commands.forceload.added.single") || key.equals("commands.forceload.added.multiple") || key.equals("commands.forceload.removed.single") || key.equals("commands.forceload.removed.multiple") || key.equals("commands.forceload.removed.all")) {
+					update();
 				}
 			}
 
