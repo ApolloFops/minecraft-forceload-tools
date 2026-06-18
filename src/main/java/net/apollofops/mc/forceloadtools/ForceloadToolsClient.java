@@ -71,6 +71,11 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	 */
 	private boolean updating = false;
 
+	/**
+	 * The OverlayLib overlay object.
+	 */
+	private final Overlay overlay = new Overlay(new CrossOverlayRenderer(), 16, 16, overlayManager);
+
 	@Override
 	public void onInitializeClient() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
@@ -148,22 +153,35 @@ public class ForceloadToolsClient implements ClientModInitializer {
 
 		ForceloadTools.LOGGER.info("Registered forceload query hook");
 
-		Overlay overlay = new Overlay(new CrossOverlayRenderer(), 16, 16, overlayManager);
+		// Set up the overlay
 		overlay.register();
-		overlay.setActive(true);
 
 		ForceloadTools.LOGGER.info("Set up forceload overlay");
 
+		// Register commands
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(Commands.literal("forceloadtools")
 					.then(Commands.literal("update")
 							.executes(context -> {
 								update();
 								return 1;
+							}))
+					.then(Commands.literal("enable")
+							.executes(context -> {
+								enable();
+								return 1;
+							}))
+					.then(Commands.literal("disable")
+							.executes(context -> {
+								disable();
+								return 1;
 							})));
 		});
 
 		ForceloadTools.LOGGER.info("Set up forceload commands");
+
+		// Disable the overlay so we get into a known state
+		disable();
 	}
 
 	/**
@@ -173,6 +191,21 @@ public class ForceloadToolsClient implements ClientModInitializer {
 		updating = true;
 
 		Minecraft.getInstance().player.connection.sendCommand("forceload query");
+	}
+
+	/**
+	 * Enables the overlay and requests an update.
+	 */
+	public void enable() {
+		overlay.setActive(true);
+		update();
+	}
+
+	/**
+	 * Disables the overlay.
+	 */
+	public void disable() {
+		overlay.setActive(false);
 	}
 
 	/**
