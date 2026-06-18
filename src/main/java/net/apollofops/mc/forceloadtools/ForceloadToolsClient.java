@@ -9,9 +9,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
@@ -63,6 +64,13 @@ public class ForceloadToolsClient implements ClientModInitializer {
 		return new OverlayRendererBlockData(blockPos, 0, 0, 0, 0, TextureSection.SINGULAR);
 	}));
 
+	/**
+	 * Are we currently waiting for a response from an update query?
+	 * <p>
+	 * This determines whether or not we allow the chat message from the response through.
+	 */
+	private boolean updating = false;
+
 	@Override
 	public void onInitializeClient() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
@@ -105,9 +113,12 @@ public class ForceloadToolsClient implements ClientModInitializer {
 					overlayManager.clearAll();
 
 					// Hide the message from the chatbox
-					// Should probably do something to make sure that this only happens when we trigger the message
-					// (maybe set a flag which gets checked and then unset here?)
-					return false;
+					if (updating) {
+						updating = false;
+						return false;
+					} else {
+						return true;
+					}
 				}
 			}
 
@@ -121,6 +132,26 @@ public class ForceloadToolsClient implements ClientModInitializer {
 		overlay.setActive(true);
 
 		ForceloadTools.LOGGER.info("Set up forceload overlay");
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(Commands.literal("forceloadtools")
+					.then(Commands.literal("update")
+							.executes(context -> {
+								update();
+								return 1;
+							})));
+		});
+
+		ForceloadTools.LOGGER.info("Set up forceload commands");
+	}
+
+	/**
+	 * Queries the server for what chunks are forceloaded and sets the client into the updating state.
+	 */
+	public void update() {
+		updating = true;
+
+		Minecraft.getInstance().player.connection.sendCommand("forceload query");
 	}
 
 	/**
