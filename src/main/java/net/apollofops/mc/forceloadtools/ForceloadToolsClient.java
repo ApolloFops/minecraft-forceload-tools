@@ -1,5 +1,7 @@
 package net.apollofops.mc.forceloadtools;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,24 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 
 @Environment(EnvType.CLIENT)
 public class ForceloadToolsClient implements ClientModInitializer {
+	/**
+	 * A record that describes a single forceloaded chunk.
+	 * <p>
+	 * This is used to organize the internal list of forceloaded chunks.
+	 *
+	 * @param x
+	 *                The X coordinate of the chunk.
+	 * @param y
+	 *                The Y coordinate of the chunk.
+	 */
+	public record ForceloadedChunk(int x, int y) {}
+
+	/**
+	 * The list of chunks that are currently known to be forceloaded. This gets updated every time the
+	 * client recieves a forceload query result.
+	 */
+	private List<ForceloadedChunk> forceloadedChunks = new ArrayList<ForceloadedChunk>();
+
 	@Override
 	public void onInitializeClient() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
@@ -37,11 +57,19 @@ public class ForceloadToolsClient implements ClientModInitializer {
 					// Pattern pattern = Pattern.compile("\\[(\\d+)\\,\\s(\\d+)\\]");
 					Matcher matcher = pattern.matcher(chunkList);
 
+					forceloadedChunks.clear();
+
 					while (matcher.find()) {
 						if (matcher.groupCount() == 2) {
-							log("X: " + matcher.group(1));
-							log("Y: " + matcher.group(2));
+							int x = Integer.parseInt(matcher.group(1));
+							int y = Integer.parseInt(matcher.group(2));
+
+							forceloadedChunks.add(new ForceloadedChunk(x, y));
 						}
+					}
+
+					for (ForceloadedChunk chunk : forceloadedChunks) {
+						log(String.format("Chunk [%d, %d]", chunk.x, chunk.y));
 					}
 
 					// Hide the message from the chatbox
