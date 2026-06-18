@@ -15,6 +15,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
+import net.lugo.overlaylib.Overlay;
+import net.lugo.overlaylib.managers.CachedOverlayManager;
+import net.lugo.overlaylib.util.OverlayRendererBlockData;
+import net.lugo.overlaylib.util.TextureSection;
+
 @Environment(EnvType.CLIENT)
 public class ForceloadToolsClient implements ClientModInitializer {
 	/**
@@ -34,6 +39,29 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	 * client recieves a forceload query result.
 	 */
 	private List<ForceloadedChunk> forceloadedChunks = new ArrayList<ForceloadedChunk>();
+
+	/**
+	 * Manager that handles where the overlay should get rendered.
+	 */
+	private final CachedOverlayManager overlayManager = new CachedOverlayManager((blockPos -> {
+		Minecraft client = Minecraft.getInstance();
+
+		// Don't render on just floating air blocks
+		if (!client.level.loadedAndEntityCanStandOn(blockPos, client.player)) {
+			return OverlayRendererBlockData.NO_RENDER;
+		}
+
+		// Don't render outside of the forceloaded chunks
+		int chunkX = (int) Math.floor((double) blockPos.getX() / 16);
+		int chunkZ = (int) Math.floor((double) blockPos.getZ() / 16);
+
+		if (!forceloadedChunks.stream().anyMatch(obj -> (obj.x == chunkX && obj.y == chunkZ))) {
+			return OverlayRendererBlockData.NO_RENDER;
+		}
+
+		// Otherwise, render a cross on every forceloaded block
+		return new OverlayRendererBlockData(blockPos, 0, 0, 0, 0, TextureSection.SINGULAR);
+	}));
 
 	@Override
 	public void onInitializeClient() {
@@ -71,6 +99,11 @@ public class ForceloadToolsClient implements ClientModInitializer {
 						log(String.format("Chunk [%d, %d]", chunk.x, chunk.y));
 					}
 
+					// Clear the overlay chunks so they get reloaded
+					// TODO: Be a little more selective with this, since currently it causes every chunk to get cleared
+					// every time, causing chunks to flicker on update
+					overlayManager.clearAll();
+
 					// Hide the message from the chatbox
 					// Should probably do something to make sure that this only happens when we trigger the message
 					// (maybe set a flag which gets checked and then unset here?)
@@ -82,6 +115,12 @@ public class ForceloadToolsClient implements ClientModInitializer {
 		});
 
 		ForceloadTools.LOGGER.info("Registered forceload query hook");
+
+		Overlay overlay = new Overlay(new CrossOverlayRenderer(), 16, 16, overlayManager);
+		overlay.register();
+		overlay.setActive(true);
+
+		ForceloadTools.LOGGER.info("Set up forceload overlay");
 	}
 
 	/**
