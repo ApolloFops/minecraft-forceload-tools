@@ -79,6 +79,10 @@ public class ForceloadToolsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		// Load the config
+		ForceloadToolsConfig.HANDLER.load();
+
+		// Set up message recieve hook
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			TranslatableContents translatable = null;
 
@@ -186,8 +190,16 @@ public class ForceloadToolsClient implements ClientModInitializer {
 
 		// Clean up some things when joining
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			// Disable the overlay
-			disable();
+			// Clear the list of forceloaded chunks
+			forceloadedChunks.clear();
+
+			// Enable/disable the overlay depending on whether or not we want to enable on startup
+			if (ForceloadToolsConfig.HANDLER.instance().enableOnStartup) {
+				enable();
+			} else {
+				// Disable the overlay
+				disable();
+			}
 		});
 	}
 

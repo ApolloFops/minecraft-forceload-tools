@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"net.apollofops.mc.forceloadtools.ForceloadToolsClient"
+		],
+		"modmenu": [
+			"net.apollofops.mc.forceloadtools.ModMenuIntegration"
 		]
 	},
 	"mixins": [
@@ -30,6 +33,7 @@
 		"minecraft": "~26.1.2",
 		"java": ">=25",
 		"fabric-api": "*",
+		"yet_another_config_lib_v3": ">=3.9.5+26.1",
 		"overlaylib": "~0.9.1+26.2"
 	}
 }

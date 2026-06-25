@@ -15,6 +15,11 @@ repositories {
 	maven {
 		url "https://api.modrinth.com/maven"
 	}
+
+	maven {
+		name = "Terraformers"
+		url = "https://maven.terraformersmc.com/"
+	}
 }
 
 dependencies {
@@ -26,8 +31,14 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
+	// Yet Another Config Lib
+	implementation "maven.modrinth:yacl:${project.yacl_version}"
+
 	// OverlayLib
 	api "maven.modrinth:overlaylib:${project.overlaylib_version}"
+
+	// Mod Menu
+	implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {
