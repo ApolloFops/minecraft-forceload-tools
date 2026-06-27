@@ -4,5 +4,9 @@
 	"yacl3.config.forceload-tools:forceloadtools_config.enableOnStartup": "Enable on startup",
 	"yacl3.config.forceload-tools:forceloadtools_config.enableOnStartup.desc": "Should the mod be enabled or disabled on startup?",
 	"yacl3.config.forceload-tools:forceloadtools_config.enableOnStartup.fmt.true": "Enable",
-	"yacl3.config.forceload-tools:forceloadtools_config.enableOnStartup.fmt.false": "Disable"
+	"yacl3.config.forceload-tools:forceloadtools_config.enableOnStartup.fmt.false": "Disable",
+	"yacl3.config.forceload-tools:forceloadtools_config.texture": "Overlay texture",
+	"yacl3.config.forceload-tools:forceloadtools_config.texture.desc": "What texture should be overlayed on the blocks?",
+	"forceload-tools.texture.cross": "Cross",
+	"forceload-tools.texture.dot": "Dot"
 }

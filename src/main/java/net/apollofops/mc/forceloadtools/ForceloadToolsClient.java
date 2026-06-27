@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.apollofops.mc.forceloadtools.ForceloadToolsConfig.Texture;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
@@ -73,9 +74,14 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	private boolean updating = false;
 
 	/**
+	 * Is the overlay currently active?
+	 */
+	private boolean isActive = false;
+
+	/**
 	 * The OverlayLib overlay object.
 	 */
-	private final Overlay overlay = new Overlay(new CrossOverlayRenderer(), 16, 16, overlayManager);
+	private Overlay overlay;
 
 	@Override
 	public void onInitializeClient() {
@@ -159,7 +165,11 @@ public class ForceloadToolsClient implements ClientModInitializer {
 		ForceloadTools.LOGGER.info("Registered forceload query hook");
 
 		// Set up the overlay
-		overlay.register();
+		switchTexture(ForceloadToolsConfig.HANDLER.instance().texture);
+
+		ForceloadToolsConfig.registerFieldCallback("texture", (value) -> {
+			switchTexture((Texture) value);
+		});
 
 		ForceloadTools.LOGGER.info("Set up forceload overlay");
 
@@ -216,6 +226,7 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	 * Enables the overlay and requests an update.
 	 */
 	public void enable() {
+		isActive = true;
 		overlay.setActive(true);
 		update();
 	}
@@ -224,7 +235,23 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	 * Disables the overlay.
 	 */
 	public void disable() {
+		isActive = false;
 		overlay.setActive(false);
+	}
+
+	/**
+	 * Switches what Texture is active.
+	 *
+	 * @param texture
+	 *                The new texture to use.
+	 */
+	private void switchTexture(Texture texture) {
+		if (overlay != null) {
+			overlay.setActive(false);
+		}
+		overlay = new Overlay(texture.renderer, 16, 16, overlayManager);
+		overlay.setActive(isActive);
+		overlay.register();
 	}
 
 	/**

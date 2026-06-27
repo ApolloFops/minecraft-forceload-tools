@@ -1,5 +1,6 @@
-package net.apollofops.mc.forceloadtools;
+package net.apollofops.mc.forceloadtools.renderers;
 
+import net.apollofops.mc.forceloadtools.ForceloadTools;
 import net.lugo.overlaylib.renderers.SimpleTextureOverlayRenderer;
 import net.minecraft.resources.Identifier;
 
