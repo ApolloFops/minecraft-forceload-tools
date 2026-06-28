@@ -112,6 +112,11 @@ public class ForceloadToolsConfig {
 	@SerialEntry
 	public Texture texture = Texture.DOT;
 
+	@AutoGen(category = "debug")
+	@Boolean(formatter = Boolean.Formatter.ON_OFF, colored = true)
+	@SerialEntry
+	public boolean chatLogging = false;
+
 	public enum Texture implements NameableEnum {
 		CROSS(new CrossOverlayRenderer()), DOT(new DotOverlayRenderer());
 

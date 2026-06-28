@@ -263,13 +263,15 @@ public class ForceloadToolsClient implements ClientModInitializer {
 	public static void log(String message) {
 		ForceloadTools.LOGGER.info(message);
 
-		Minecraft client = Minecraft.getInstance();
+		if (ForceloadToolsConfig.HANDLER.instance().chatLogging) {
+			Minecraft client = Minecraft.getInstance();
 
-		if (client.gui != null) {
-			Component logText = Component.literal("[ForceloadTools] " + message)
-					.withStyle(ChatFormatting.AQUA);
+			if (client.gui != null) {
+				Component logText = Component.literal("[ForceloadTools] " + message)
+						.withStyle(ChatFormatting.AQUA);
 
-			client.gui.getChat().addClientSystemMessage(logText);
+				client.gui.getChat().addClientSystemMessage(logText);
+			}
 		}
 	}
 }

@@ -8,5 +8,8 @@
 	"yacl3.config.forceload-tools:forceloadtools_config.texture": "Overlay texture",
 	"yacl3.config.forceload-tools:forceloadtools_config.texture.desc": "What texture should be overlayed on the blocks?",
 	"forceload-tools.texture.cross": "Cross",
-	"forceload-tools.texture.dot": "Dot"
+	"forceload-tools.texture.dot": "Dot",
+	"yacl3.config.forceload-tools:forceloadtools_config.category.debug": "Debug",
+	"yacl3.config.forceload-tools:forceloadtools_config.chatLogging": "Send log messages to chat",
+	"yacl3.config.forceload-tools:forceloadtools_config.chatLogging.desc": "Should log messages be sent to chat?"
 }
