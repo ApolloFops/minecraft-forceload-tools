@@ -1,9 +1,11 @@
 # Forceload Tools
 
-## Setup
+![A screenshot of how a forceloaded chunk is visualized in game. Every block in the forceloaded chunks has a black dot on the center.](https://cdn.modrinth.com/data/sSKOzPmE/images/6db21dda1053f28c27cf0135ab9a8c653672e5e5.jpeg)
 
-For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
+This mod allows for visualizing what chunks are forceloaded in your world. This mod works through the vanilla `/forceload query` command, so it does not require any server-side functionality to work, although if others are running forceload-related commands, you may become desynced and have to run `/forceload query` or `/forceloadtools update` to get back in sync.
 
-## License
+## Usage
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+Enable/disable the overlay with the `/forceloadtools [enable/disable]` commands.
+
+Update the list of chunks with `/forceloadtools update`. The list will also be updated every time the mod sees that a `/forceload` command has been run.
